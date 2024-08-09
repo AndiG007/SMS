@@ -1,108 +1,48 @@
-<!doctype html>
-{% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-    <title>Student Management</title>
-    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
-</head>
-<body class = 'd-flex flex-column min-vh-100'>
-  <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        <i class="fa-solid fa-graduation-cap"></i> PythonAL21
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarColor02">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a class="nav-link active" href="/">Home
-              <span class="visually-hidden">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="fa-solid fa-list"></i> Course Program
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="fa-solid fa-circle-plus"></i> Add a student
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Separated link</a>
-            </div>
-          </li>
-        </ul>
-        <form class="d-flex">
-          <input class="form-control me-sm-2" type="search" placeholder="Search">
-          <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-        </form>
-      </div>
-    </div>
-  </nav>
-  <div class="container-fluid">
-    <h3 class="m-4">All Students</h3>
-      <div class="row">
-        <div class="col-12">
-          {% if student %}
-          <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">Student ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Surname</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Field of study</th>
-                    <th scope="col">GPA</th>
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                {% for student in student %}
-                  <tr>
-                    <td>{{ student.student_nr }} </td>
-                    <td>{{ student.first_name }} </td>
-                    <td>{{ student.second_name }} </td>
-                    <td>{{ student.email }} </td>
-                    <td>{{ student.field_of_study }} </td>
-                    <td>{{ student.gpa }} </td>
-                    <td>Action</td>
-                  </tr>
-                {% endfor %}
-                </tbody>
-              </table>
-          </div>
-          {% else %}
-          <h5 class="alert alert-info"> No student registered !</h5>
-          {% endif %}
-      </div>
+{% extends 'students/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <h3 class="m-4">All Students</h3>
+    <div class="row">
+      <div class="col-12">
+        <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Student ID</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Surname</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Field of study</th>
+                  <th scope="col">GPA</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for student in students %}
+                <tr>
+                  <td>{{ student.student_nr }} </td>
+                  <td>{{ student.first_name }} </td>
+                  <td>{{ student.second_name }} </td>
+                  <td>{{ student.email }} </td>
+                  <td>{{ student.field_of_study }} </td>
+                  <td>{% if student.gpa %}{{ student.gpa|floatformat:1 }}{% else %}-{% endif %} </td>
+                  <td><a href="{% url 'info_view' student.id %}"><button type="button" class = "btn btn-info">Info</button></a>
+                      <a href="{% url 'update_view' student.id %}"><button type="button" class="btn btn-warning">Update</button></a>
+                      <a href="{% url 'delete_view' student.id %}"><button type="button" class="btn btn-danger">Delete</button></a>
+                  </td>
+                </tr>
+              {% empty %}
+              <tr>
+                <td colspan="7">
+                  <div class="alert alert-secondary">No students have registered yet</div>
+                </td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+        </div>
     </div>
   </div>
-  <footer class = 'mt-auto mb-4'>
-    <div class="text-center">
-      <span>
-          Copyright &copy; 2024 Andi's Project
-      </span>
-    </div>
-  </footer>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</div>
+{% endblock content %}
